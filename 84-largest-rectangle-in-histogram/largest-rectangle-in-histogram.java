@@ -1,30 +1,30 @@
+import java.util.*;
+
 class Solution {
     public int largestRectangleArea(int[] heights) {
-        Stack<Integer> stack=new Stack<>();
-        int max=0;
-        stack.push(0);
-        for(int i=1;i<heights.length;i++){
-            while(!stack.isEmpty() && heights[i]<heights[stack.peek()]){
-                max=getmax(heights,stack,max,i);
+        Stack<Integer> st = new Stack<>();
+        int maxArea = 0;
+        int n = heights.length;
+
+        for (int i = 0; i <= n; i++) {
+            int currHeight = (i == n) ? 0 : heights[i];
+
+            while (!st.isEmpty() && heights[st.peek()] > currHeight) {
+                int height = heights[st.pop()];
+
+                int width;
+                if (st.isEmpty()) {
+                    width = i;
+                } else {
+                    width = i - st.peek() - 1;
+                }
+
+                maxArea = Math.max(maxArea, height * width);
             }
-            stack.push(i);
-        }
-        
-            while (!stack.isEmpty()) {
-            max = getmax(heights, stack, max, heights.length);
+
+            st.push(i);
         }
 
-        return max;
-    }
-    private int getmax(int[] heights, Stack<Integer> stack, int max, int i){
-        int area=0;
-        int popped=stack.pop();
-        if(stack.isEmpty()){
-            area=heights[popped]*i;
-        }
-        else{
-            area=heights[popped]*(i-1-stack.peek());
-        }
-        return Math.max(max,area);
+        return maxArea;
     }
 }
