@@ -6,24 +6,30 @@ class Solution {
     private int atMost(int[] nums, int k) {
         int left = 0;
         int count = 0;
-        Map<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+
+        int[] freq = new int[nums.length + 1];
 
         for (int right = 0; right < nums.length; right++) {
-            map.put(nums[right], map.getOrDefault(nums[right], 0) + 1);
+            if (freq[nums[right]] == 0) {
+                count++;
+            }
 
-            while (map.size() > k) {
-                map.put(nums[left], map.get(nums[left]) - 1);
+            freq[nums[right]]++;
 
-                if (map.get(nums[left]) == 0) {
-                    map.remove(nums[left]);
+            while (count > k) {
+                freq[nums[left]]--;
+
+                if (freq[nums[left]] == 0) {
+                    count--;
                 }
 
                 left++;
             }
 
-            count += right - left + 1;
+            ans += right - left + 1;
         }
 
-        return count;
+        return ans;
     }
 }
