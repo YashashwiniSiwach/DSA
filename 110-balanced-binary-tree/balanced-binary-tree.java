@@ -1,30 +1,27 @@
 class Solution {
     public boolean isBalanced(TreeNode root) {
-        if (root == null) {
-            return true;
-        }
-
-        boolean isbalancedleft = isBalanced(root.left);
-        boolean isbalancedright = isBalanced(root.right);
-
-        int leftheight = maxD(root.left, 0);
-        int rightheight = maxD(root.right, 0);
-
-        if (Math.abs(leftheight - rightheight) > 1) {
-            return false;
-        }
-
-        return isbalancedleft && isbalancedright;
+        return height(root) != -1;
     }
 
-    private static int maxD(TreeNode root, int count) {
+    private int height(TreeNode root) {
         if (root == null) {
-            return count;
+            return 0;
         }
 
-        int ans1 = maxD(root.left, count + 1);
-        int ans2 = maxD(root.right, count + 1);
+        int leftHeight = height(root.left);
+        if (leftHeight == -1) {
+            return -1;
+        }
 
-        return Math.max(ans1, ans2);
+        int rightHeight = height(root.right);
+        if (rightHeight == -1) {
+            return -1;
+        }
+
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return -1;
+        }
+
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 }
