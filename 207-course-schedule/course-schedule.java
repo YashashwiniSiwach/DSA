@@ -1,64 +1,53 @@
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-
-        List<List<Integer>> graph = new ArrayList<>();
-
-        for (int i = 0; i < numCourses; i++) {
-            graph.add(new ArrayList<>());
+        List<List<Integer>>adj= new ArrayList<>();
+        for(int i=0;i<numCourses;i++){
+            adj.add(new ArrayList<>());
         }
+        for(int [] p: prerequisites){
+            int courses =p[0];
+            int prerequisite=p[1];
 
-        // Build graph
-        for (int[] p : prerequisites) {
-            int course = p[0];
-            int prerequisite = p[1];
-
-            graph.get(prerequisite).add(course);
+        adj.get(prerequisite).add(courses);
         }
-
-        // 0 = unvisited
-        // 1 = visiting
-        // 2 = completely visited
-        int[] visited = new int[numCourses];
-
-        for (int i = 0; i < numCourses; i++) {
-            if (visited[i] == 0) {
-                if (hasCycle(i, graph, visited)) {
+        int [] vis=new int [numCourses];
+        Stack<Integer> st= new Stack<>();
+        for(int i=0;i<numCourses;i++){
+            if(vis[i]==0){
+                if(!dfs(i,adj,vis,st)){
                     return false;
                 }
             }
         }
-
         return true;
-    }
 
-    private boolean hasCycle(
-        int course,
-        List<List<Integer>> graph,
-        int[] visited
+    }
+    private boolean dfs(int node,
+        List<List<Integer>> adj,
+        int[] visited,
+        Stack<Integer> stack
     ) {
 
-        // We reached a node that is currently in our DFS path
-        if (visited[course] == 1) {
-            return true;
-        }
-
-        // Already completely checked
-        if (visited[course] == 2) {
+        if (visited[node] == 1) {
             return false;
         }
 
-        // Mark as currently visiting
-        visited[course] = 1;
-
-        for (int next : graph.get(course)) {
-            if (hasCycle(next, graph, visited)) {
-                return true;
-            }
+    
+        if (visited[node] == 2) {
+            return true;
         }
 
-        // Finished processing this course
-        visited[course] = 2;
+        visited[node] = 1;
 
-        return false;
+       for (int next : adj.get(node)) {
+
+            if (!dfs(next, adj, visited, stack)) {
+                return false;
+            }
+        }
+        visited[node] = 2;
+        stack.push(node);
+
+        return true;
     }
 }
