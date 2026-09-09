@@ -32,31 +32,24 @@ class Solution {
         Stack<Integer> stack
     ) {
 
-        // Cycle detected
         if (visited[node] == 1) {
             return false;
         }
 
-        // Already completely processed
+    
         if (visited[node] == 2) {
             return true;
         }
 
-        // Mark as currently visiting
         visited[node] = 1;
 
-        // Visit neighbours
-        for (int next : adj.get(node)) {
+       for (int next : adj.get(node)) {
 
             if (!dfs(next, adj, visited, stack)) {
                 return false;
             }
         }
-
-        // Mark as completely visited
         visited[node] = 2;
-
-        // Add AFTER all neighbours
         stack.push(node);
 
         return true;
