@@ -1,28 +1,20 @@
-import java.util.*;
-
 class Solution {
-
     public int numIslands(char[][] grid) {
-        int m = grid.length;
-        int n = grid[0].length;
-        int cnt = 0;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-
-                if (grid[i][j] == '1') {
-                    bfs(grid, i, j);
+        int m=grid.length;
+        int n=grid[0].length;
+        int cnt=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]=='1'){
                     cnt++;
+                    bfs(grid,i,j);
                 }
             }
         }
-
         return cnt;
     }
-
-    private void bfs(char[][] grid, int row, int col) {
-
-        int m = grid.length;
+    public static void bfs(char[][] grid,int row, int col){
+       int m = grid.length;
         int n = grid[0].length;
 
         Queue<int[]> q = new LinkedList<>();
