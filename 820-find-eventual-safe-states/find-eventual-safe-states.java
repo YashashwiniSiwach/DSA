@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Solution {
     public List<Integer> eventualSafeNodes(int[][] graph) {
         int n = graph.length;
@@ -16,10 +18,8 @@ class Solution {
 
         int[] indegree = new int[n];
 
-        for (int u = 0; u < n; u++) {
-            for (int v : reversedGraph.get(u)) {
-                indegree[v]++;
-            }
+        for (int i = 0; i < n; i++) {
+            indegree[i] = graph[i].length;
         }
 
         Queue<Integer> q = new LinkedList<>();
@@ -34,11 +34,11 @@ class Solution {
             int node = q.poll();
             ans.add(node);
 
-            for (int i : reversedGraph.get(node)) {
-                indegree[i]--;
+            for (int neighbor : reversedGraph.get(node)) {
+                indegree[neighbor]--;
 
-                if (indegree[i] == 0) {
-                    q.offer(i);
+                if (indegree[neighbor] == 0) {
+                    q.offer(neighbor);
                 }
             }
         }
