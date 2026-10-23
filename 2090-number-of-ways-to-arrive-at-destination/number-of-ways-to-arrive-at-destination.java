@@ -1,19 +1,25 @@
 class Solution {
     public int countPaths(int n, int[][] roads) {
-        final int MOD = 1_000_000_007;
+         final int MOD = 1_000_000_007;
 
-        List<List<int[]>> graph = new ArrayList<>();
+        List<List<int[]>> adj = new ArrayList<>();
+
         for (int i = 0; i < n; i++) {
-            graph.add(new ArrayList<>());
+            adj.add(new ArrayList<>());
         }
 
         for (int[] road : roads) {
-            graph.get(road[0]).add(new int[]{road[1], road[2]});
-            graph.get(road[1]).add(new int[]{road[0], road[2]});
+            int u = road[0];
+            int v = road[1];
+            int time = road[2];
+
+            adj.get(u).add(new int[]{v, time});
+            adj.get(v).add(new int[]{u, time});
         }
 
         long[] dist = new long[n];
-        long[] ways = new long[n];
+        int[] ways = new int[n];
+
         Arrays.fill(dist, Long.MAX_VALUE);
 
         dist[0] = 0;
@@ -27,25 +33,33 @@ class Solution {
 
         while (!pq.isEmpty()) {
             long[] curr = pq.poll();
-            long d = curr[0];
+
+            long time = curr[0];
             int node = (int) curr[1];
 
-            if (d > dist[node]) continue;
+            if (time > dist[node]) {
+                continue;
+            }
 
-            for (int[] edge : graph.get(node)) {
+            for (int[] edge : adj.get(node)) {
                 int next = edge[0];
-                long newDist = d + edge[1];
+                int weight = edge[1];
 
-                if (newDist < dist[next]) {
-                    dist[next] = newDist;
+                long newTime = time + weight;
+
+                if (newTime < dist[next]) {
+                    dist[next] = newTime;
                     ways[next] = ways[node];
-                    pq.offer(new long[]{newDist, next});
-                } else if (newDist == dist[next]) {
-                    ways[next] = (ways[next] + ways[node]) % MOD;
+
+                    pq.offer(new long[]{newTime, next});
+                } else if (newTime == dist[next]) {
+                    ways[next] = (int) (
+                        (ways[next] + (long) ways[node]) % MOD
+                    );
                 }
             }
         }
 
-        return (int) ways[n - 1];
+        return ways[n - 1];
     }
 }
