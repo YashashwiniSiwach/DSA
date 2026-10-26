@@ -1,11 +1,15 @@
 class Solution {
-    public int makeConnected(int n, int[][] connections) {
+    int[] parent;
+    int[] rank;
 
+    public int makeConnected(int n, int[][] connections) {
         if (connections.length < n - 1) {
             return -1;
         }
 
-        int[] parent = new int[n];
+        parent = new int[n];
+        rank = new int[n];
+
         for (int i = 0; i < n; i++) {
             parent[i] = i;
         }
@@ -13,22 +17,41 @@ class Solution {
         int components = n;
 
         for (int[] connection : connections) {
-            int rootA = find(connection[0], parent);
-            int rootB = find(connection[1], parent);
+            int u = connection[0];
+            int v = connection[1];
 
-            if (rootA != rootB) {
-                parent[rootA] = rootB;
-                components--; 
+            if (union(u, v)) {
+                components--;
             }
         }
 
         return components - 1;
     }
 
-    private int find(int i, int[] parent) {
-        if (parent[i] == i) {
-            return i;
+    private int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
         }
-        return parent[i] = find(parent[i], parent);
+        return parent[x];
+    }
+
+    private boolean union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+
+        if (rootX == rootY) {
+            return false;
+        }
+
+        if (rank[rootX] < rank[rootY]) {
+            parent[rootX] = rootY;
+        } else if (rank[rootX] > rank[rootY]) {
+            parent[rootY] = rootX;
+        } else {
+            parent[rootY] = rootX;
+            rank[rootX]++;
+        }
+
+        return true;
     }
 }
